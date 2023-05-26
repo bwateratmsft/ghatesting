@@ -4,32 +4,39 @@ on:
             - main
 
 jobs:
-    check_changes:
+    changes:
         runs-on: ubuntu-latest
         steps:
+            # Determine changed subpaths to run the matrix on
+            # See https://github.com/dorny/paths-filter/tree/v2/#examples
             - uses: dorny/paths-filter@v2
-              id: changes
+              id: filter
               with:
                   filters: |
-                    package1:
-                        - "pack1/**"
-                    package2:
-                        - "pack2/**"
+                    pack1: "pack1/**"
+                    pack2: "pack2/**"
         outputs:
-            package1: ${{ steps.changes.outputs.package1 }}
-            package2: ${{ steps.changes.outputs.package2 }}
+            # Expose matched filters as job 'packages' output variable
+            packages: ${{ steps.filter.outputs.changes }}
 
-    Package1:
+    build:
+        needs: changes
         runs-on: ubuntu-latest
-        needs: check_changes
+        strategy:
+            matrix:
+                package: ${{ fromJson(needs.changes.outputs.packages) }}
         steps:
-            - run: echo "Package1 was changed"
-              if: needs.check_changes.outputs.package1 == 'true'
+            - uses: actions/checkout@v2
+            - name: Build ${{ matrix.package }}
+              run: cd ${{ matrix.package }}
+            - run: echo "Building ${{ matrix.package }}..."
 
-
-    Package2:
+    packages_result:
+        # Require all jobs under `build` to have succeeded
+        # See https://github.com/orgs/community/discussions/26822
+        if: ${{ always() }}
+        needs: [build]
         runs-on: ubuntu-latest
-        needs: check_changes
         steps:
-            - run: echo "Package2 was changed"
-              if: needs.check_changes.outputs.package2 == 'true'
+            - run: exit 1
+              if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
