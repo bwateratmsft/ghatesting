@@ -11,8 +11,8 @@ jobs:
               id: filter
               with:
                   filters: |
-                    package1: "pack1/**"
-                    package2: "pack2/**"
+                    pack1: "pack1/**"
+                    pack2: "pack2/**"
         outputs:
             # Expose matched filters as job 'packages' output variable
             packages: ${{ steps.filter.outputs.changes }}
