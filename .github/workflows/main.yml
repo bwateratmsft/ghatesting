@@ -12,7 +12,7 @@ jobs:
               with:
                   filters: |
                     package1:
-                        - "package1/**"
+                        - "pack1/**"
             - run: echo "Package1"
               if: steps.changes.outputs.package1 == 'true'
 
