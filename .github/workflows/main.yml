@@ -28,3 +28,10 @@ jobs:
             - name: Build ${{ matrix.package }}
               run: cd ${{ matrix.package }}
             - run: echo "Building ${{ matrix.package }}..."
+
+    packages_result:
+        needs: [build]
+        runs-on: ubuntu-latest
+        steps:
+            - run: exit 1
+              if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
