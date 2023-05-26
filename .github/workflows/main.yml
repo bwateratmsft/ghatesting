@@ -31,6 +31,7 @@ jobs:
             - run: exit 1
 
     packages_result:
+        if: ${{ always() }}
         needs: [build]
         runs-on: ubuntu-latest
         steps:
