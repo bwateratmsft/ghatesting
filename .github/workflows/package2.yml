@@ -1,0 +1,12 @@
+on:
+    pull_request:
+        branches:
+            - main
+        paths:
+            - pack2/**
+
+jobs:
+    DoStuff:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "I did stuff for package 2!"
