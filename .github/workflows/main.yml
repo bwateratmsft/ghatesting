@@ -1,0 +1,23 @@
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    Package1:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: dorny/paths-filter@v2
+              id: changes
+              with:
+                  filters: |
+                    package1:
+                        - "package1/**"
+            - run: echo "Package1"
+              if: steps.changes.outputs.package1 == 'true'
+
+
+    Package2:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Package2"
