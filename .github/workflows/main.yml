@@ -35,4 +35,5 @@ jobs:
         needs: [build]
         runs-on: ubuntu-latest
         steps:
-            - run: exit 0
+            - run: exit 1
+              if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
