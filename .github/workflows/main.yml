@@ -4,7 +4,7 @@ on:
             - main
 
 jobs:
-    Package1:
+    check_changes:
         runs-on: ubuntu-latest
         steps:
             - uses: dorny/paths-filter@v2
@@ -13,11 +13,23 @@ jobs:
                   filters: |
                     package1:
                         - "pack1/**"
-            - run: echo "Package1"
-              if: steps.changes.outputs.package1 == 'true'
+                    package2:
+                        - "pack2/**"
+        outputs:
+            package1: ${{ steps.changes.outputs.package1 }}
+            package2: ${{ steps.changes.outputs.package2 }}
+
+    Package1:
+        runs-on: ubuntu-latest
+        needs: check_changes
+        steps:
+            - run: echo "Package1 was changed"
+              if: needs.check_changes.outputs.package1 == 'true'
 
 
     Package2:
         runs-on: ubuntu-latest
+        needs: check_changes
         steps:
-            - run: echo "Package2"
+            - run: echo "Package2 was changed"
+              if: needs.check_changes.outputs.package2 == 'true'
