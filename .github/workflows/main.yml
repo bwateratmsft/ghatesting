@@ -28,6 +28,7 @@ jobs:
             - name: Build ${{ matrix.package }}
               run: cd ${{ matrix.package }}
             - run: echo "Building ${{ matrix.package }}..."
+            - run: exit 1
 
     packages_result:
         needs: [build]
