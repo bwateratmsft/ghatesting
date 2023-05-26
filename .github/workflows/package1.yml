@@ -6,7 +6,7 @@ on:
             - pack1/**
 
 jobs:
-    DoStuff:
+    BuildPackage1:
         runs-on: ubuntu-latest
         steps:
             - run: echo "I did stuff for package 1!"
